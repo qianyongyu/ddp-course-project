@@ -1,0 +1,52 @@
+Effect of Variable Selection on Linear Regression Model
+========================================================
+author: Qianyong Yu
+date: 2016-04-21
+
+Overview
+========================================================
+
+This application helps the user understand the impact of variable selection on linear regression models.
+
+It contains the following main sections:
+
+- **Introduction** explains the dataset and how the application works.
+- **Variable Selector** allows the user to choose any combination of variables.
+- **Attempt History** shows the model performance of last 20 variable combinations.
+- **Attempt Detail** which shows correlation of predictions vs. actual values.
+
+Dataset Selection
+========================================================
+
+The built-in mtcars dataset is selected for this application because it contains variables that are highly correlated, as shown in the diagram below:
+```{r echo = FALSE, fig.width = 14, fig.height = 7}
+pairs(mtcars)
+```
+
+It's just like a game
+========================================================
+
+The application challenges the user to achieve the best possible Adjusted R-Squared. The trick (due to the nature of the dataset) is, it's not easily achievable by sequentially including/excluding each variable. Here's what a typical run looks like:
+```{r, echo=FALSE, fig.width = 14, fig.height = 7}
+r2 <- c(0.8207856, 0.8263446, 0.8185189, 0.8224275, 0.8289220, 0.8307783, 0.8307319, 0.8243010, 0.8227167, 0.7948184, 0.8022833, 0.8128026, 0.8126595, 0.8128026, 0.8126595, 0.8128026, 0.8126595, 0.8045258, 0.8337290, 0.8375334)
+attempts <- 26
+plot(if (attempts <= 20) { 1:attempts } else { (attempts - 19) : attempts }, 
+         r2,
+         ylab = "Adjusted R-Squared", 
+         ylim = c(0.75, 0.85),
+         xlab = "Attempt",
+         xlim = if (attempts <= 20) { c(1,20) } else { c(attempts - 20, attempts) },
+         main = "Attempt History",
+         pch = 19,
+         type = "l")
+    
+    # the optimal value comes from the result of the regsubsets function
+    abline(h = 0.8375334, lwd = 2, col = "red")
+```
+
+Additional Features
+========================================================
+
+- **Reactive Model Building** The linear model is fit only once per variable combination, and reused multiple times to render several charts and text.
+- **Smart Window Scrolling** The Attempt History chart scrolls to the right according to the number of attempts to always show the last 20 attempts.
+- **Fixed Correlation Chart Axis Range** The x and y ranges are fixed for the correlation chart so that model performances are visualized consistently.
